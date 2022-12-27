@@ -14,7 +14,7 @@
 
 ## 계획 
 - NLP 관련 AI 논문들을 각자 5 ~ 10편 선정하는 시간 (흥미, 지식 수요 위주)
-- 주 N회 기간 선정 후 Issues 페이지에 정리되는 대로 주 N회 Commit (Upload) 하기 
+- 주 N회 기간 선정 후 해당 REPO의 [Issues](https://github.com/purang2/KnuNLPStudyTalk/issues) 페이지에 정리되는 대로 주 N회 Commit (Upload) 하기 
 - 양식은 자유 
 - **지향점**: 코딩도 좋지만 논문을 많이 읽을 것 (-2022.2 어느 날 Brain AI 랩미팅 중 발췌-) 
 
