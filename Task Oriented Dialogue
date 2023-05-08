@@ -1,0 +1,103 @@
+Task Oriented Dialogue(TOD) 소개
+===============================
+
+Dialogue Management in Conversational Systems: A Review of Approaches, Challenges, and Opportunities
+-------------------------------------------------------------------------------------------------------
+
+abstract
+----------------
+
+scalable하고 robust한 dialog manage 시스템을 만드는 것은 대단히 어려운 일이다. 따라서 dialog system을 앞으로의 연구 방향과 디자인 관점에서 논의함.
+
+1. introduction
+---------------
+
+대화 시스템은 2가지 종류로 나뉜다. 첫 번째는 task-oriented, 두 번째는 non-task-oriented이다. task-oriented는 예약 시스템이나 주문 시스템처럼 목적이 있는 대화 시스템이고, 
+non-task-oriented은 chit-chat과 같은 그냥 특정 목적이 없는 심심이 같은 대화시스템이다. 이 논문에서는 task-oriented에서 DM(Dialog Management)를 자세하게 다룬다.
+
+2. Problem fundamentals and dimensions
+-------------------------------------------
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FblFN17%2FbtrJ1IhNMvw%2FYGivVcSejpZeHvx3PDAw4K%2Fimg.png" width="40%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+
+위 그림의 프로세스는 보통 TOD에서 정석으로 쓰이고, DM에서 NLU는 유저 발화에서 intent, entity, dialog_act를 추출한다.
+즉, 유저 발화를 통해 유저가 어떠한 의도로 말했었고, 그 대상이 무엇이고, request인지 ask인지 어떤 행위를 요구하는지 정보를 추출함
+
+1. intent는 goal/task와 거의 동의어로 사용됨
+2. entity는 slot과 동의어로 봐도 됨. 위 그림 1을 예로 들자면 departure_city나 destination_city가 entity가 됨.
+3. dialouge act는 유저가 단순 서술인지, 질문인지, 요청인지 파악하기 위해 사용됨
+
+그리고 NLU를 통해 추출한 이러한 정보들은 DST(Dialog State Track)에 저장됨. DST에 저장된 유저 발화 정보는 이후에 DP(Dialog Policy)에 넘겨지는 데, 이 DP는 마치 일종의 함수이고
+if-else같은 룰베이스 형식이다. 이 DP는 DST에 따른 act를 결정하고 NLG파트에 넘겨주면 대화 시스템은 구체적인 대화를 생성한다.
+
+DS: 어떻게 DS가 representation되고, 어떤 정보가 포함되고, 수작업인지 데이터로 학습하는지 설명
+DST: DS가 결정되는 과정을 설명
+DP: 다음 action이 어떻게 결정되는지 설명
+Context support: 유저 의도를 파악하고 적절한 답을 주기 위해, 크게 3가지를 활용함 Converstional history, User profile, External knowledge
+
+
+3. DM 접근법
+----------------------
+
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbaFQBl%2FbtrJ3UujG6M%2FbX7TrK3CwnapDJahz1KEzk%2Fimg.png" width="40%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+
+DM 접근법에는 3가지 방법이 존재한다. 1. hand-crafted 2. data-driven 3. Hybrid
+
+3.1 Hand-crafted
+------------------
+
+보통 NLU와 NLG만이 주로 사용됨. DS와 DP의 과정이 따로 필요없고, 그냥 챗봇이 사용자에게 인풋을 받으면 DS와 DP의 과정없이 아웃풋을 출력해냄.
+
+3.2 Data-driven
+-----------------
+
+Data-driven 방식은 위 Hand-craft 방식과 달리 DS와 DP를 학습해서 사용함. 이를 위해 Supervised Learning(이하 SL)과 Reinforce Learning(이하 RL)이 사용됨. 
+SL로는 라벨 있는 데이터로 corpus를 학습하고, RL로는 tiral-and-error 과정을 학습함 
+
+1) supervised-approach
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb4kgQU%2FbtrKbsLmhrq%2Fx0a2xueGyxsxofOFfLKiBK%2Fimg.png" width="40%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+
+최근에는 DL에 관한 연구가 증가하면서, nlu와 DS를 단일 모델로 병합하는 연구가 이루어지고 있음.
+위와 같은 NBT(Neural Belief Trakcer)가 한 예임.
+
+더욱 최근 DL 모델은 GNN 모델과 attnetion 메커니즘을 사용하기도 함. 최근 DL 모델도 결국 두 가지로 나뉨. 
+pre-defined ontology-based(사전 정의된 온톨로지 기반)과 open-vocabulary candidate generation(개방형 어휘 후보 생성)으로 나뉨. 
+전자의 경우 도메인과 그에 해당하는 슬롯과 값이 제공된다고 가정함. 하지만 알다시피 정의된 것은 정확도가 높지만 동적인 환경에서는 여전히 취약함. 동적인 환경 예시는 영화 이름이나 사람 이름, 날짜, 위치 등이 있음 반면 후자의 경우 미리 정의된 것 없이 대화 기록이나 NLU 출력 값에서 슬롯 후보를 추정하는 방식임. 새로운 의도나 슬롯, 도메인을 추가할 때 데이터 수집이나 재학습과 같은 비용이 발생하지 않도록 제로샷으로 DST를 일반화 시키는 것이 현재 가장 메인이 되는 연구임. 
+
+ 
+
+Dialouge Policy
+--------------------
+DP에 지도학습을 적용시키는 두 가지 접근이 있음. 1. DP 모델을 파이프 라인 모델로 두어 DST와 NLU 모듈과 독립적으로 학습시키는 방법임. 이 방법은 DST의 DS로부터 input을 가져와서 넣거나 NLU 결과를 직접 넣어서 다음 action을 출력함.
+
+DP network안에는 Act와 Slot을 예측하는 두 개의 Softmax가 있음. Act는 request, offer, confirm, select, bye 중에 하나가 될 수 있고 Slot은 price-range, area 같은 것들이 될 수 있음. (b)의 모델은 3개의 메모리에 의존함 slot-value memory, external memory, control memory인데 read/write function과 augmented attention 메커니즘을 공유함.
+
+ 
+
+두 번째 접근은 end-to-end 모델임. 이 방식은 user utterance를 읽어서 곧 바로 모델에 넣고 다음 system action을 생성하는 방식임. 구현을 위해선 seq2seq 계열 알고리즘이 사용됨. sqe2seq 알고리즘에 사용되는 encoder는 user utterance와 dialouge history이며 decoder는 API 호출, 데이터베이스 쿼리가 될 수 있음. 알다시피 RNN, LSTM 사용했지만 최근엔 어텐션 메커니즘 사용됨. 
+
+
+
+context support
+------------------
+context history를 앞 뒤로 사용하냐 모두 사용하냐로 나뉘는데, 
+첫번째는 모든 발화를 concatation한 것.하지만 이것은 시간복잡도가 늘어난다는 단점이 있음.
+그리고 두 번째 방법은 user/dialog act나 dialog system의 특정한 feature만 캡쳐하는 것임
+
+DM 접근법의 결론
+------------------
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Frvl9D%2FbtrJ4GbvugI%2FZqFfoSZqbqEIuenz5RsQwk%2Fimg.png" width="40%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+
+DM접근법은 크게 3가지가 있고, 다음과 같다. 
+
+1. Handcrafted 방식은 구현 쉽다. 데이터 필요 없다. dialouge traceability 충족시킬 수 있다. 단점은 유지 비용 높고 스케일업과 모델의 robustness 측면에서 한계가 있다. 또 사용자 피드백 고려하지 않는다. 
+2. Data-driven 방식은 크게 지도학습 방식, 강화학습 방식으로 나뉨. (1) 지도학습 장점은 자연어의 variation을 다룰 수 있고 새로운 domain에 대한 적은 노력으로 적응 가능함. 반면 단점은 양질의 데이터 불충분과 DP에 적응하기 위한 유저 피드백 고려 못함. (2) 강화학습의 장점은 Robust하고 user utterance의 모호함을 다룰 수 있음. 단점은 작은 스케일의 대화 도메인에 한계가 있다..?, 양질의 데이터 필요하다. 
+3. Hybrid 방식은 위 둘을 섞은 것임. 장점은 학습 복잡도와 학습 데이터 줄어듦. 단점은 충분한 양질의 데이터와 개발 노력 필요
+
+DM에 사용되는 3가지 피쳐는 또한 다음과 같음
+1. external knowledge
+2. context history
+3. user profile
